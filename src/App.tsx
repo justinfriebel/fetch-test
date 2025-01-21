@@ -10,6 +10,7 @@ import { AuthProvider, AuthContext } from "@/contexts/AuthContext";
 import { LoginForm } from "@/components/login-form";
 import "./App.css";
 import LoadingSpinner from "./components/LoadingSpinner";
+import { DogBreedsFilter } from "./components/DogBreedsFilter";
 
 const AppContent: React.FC = () => {
   const authContext = useContext(AuthContext);
@@ -43,8 +44,12 @@ const AppContent: React.FC = () => {
             <SidebarTrigger />
           </div>
         </header>
-        <p>hi</p>
-        <button onClick={logout}>Logout</button>
+        <div className="p-4">
+          <DogBreedsFilter />
+          <div className="pt-4">
+            <button onClick={logout}>Logout</button>
+          </div>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );
