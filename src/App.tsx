@@ -9,6 +9,7 @@ import {
 import { AuthProvider, AuthContext } from "@/contexts/AuthContext";
 import { LoginForm } from "@/components/login-form";
 import "./App.css";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 const AppContent: React.FC = () => {
   const authContext = useContext(AuthContext);
@@ -17,7 +18,11 @@ const AppContent: React.FC = () => {
     return null;
   }
 
-  const { isAuthenticated, logout } = authContext;
+  const { isAuthenticated, isLoading, logout } = authContext;
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   if (!isAuthenticated) {
     return (

@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, ReactNode } from "react";
 
 type AuthContextType = {
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (name: string, email: string) => Promise<void>;
   logout: () => void;
 };
@@ -16,6 +17,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -26,7 +28,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             credentials: "include",
           }
         );
-        console.log(response);
         if (response.ok) {
           setIsAuthenticated(true);
         } else {
@@ -35,6 +36,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } catch (error) {
         console.error("Error checking authentication status:", error);
         setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -93,7 +96,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
