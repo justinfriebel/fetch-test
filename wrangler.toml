@@ -1,0 +1,7 @@
+name = "fetch-test"
+compatibility_date = "2025-01-17"
+main = "worker.ts"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
