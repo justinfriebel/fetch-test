@@ -5,7 +5,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type DogBreedsFilterProps = {
   selectedBreeds: string[];

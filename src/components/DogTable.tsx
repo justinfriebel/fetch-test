@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { fetchDogs } from "@/api/dogService";
 import type { Dog } from "@/api/dogService";
 import {
@@ -21,7 +21,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -37,42 +36,42 @@ const DogTable: React.FC<DogTableProps> = ({ selectedBreeds }) => {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
   const [size] = useState<number>(10);
-  const [sortField, setSortField] = useState<string>("name");
+  const [sortField, setSortField] = useState<string>("breed");
   const [sortOrder, setSortOrder] = useState<string>("asc");
 
-  const loadDogs = async (
-    pageNumber: number,
-    breeds: string[],
-    sort: string
-  ) => {
-    setLoading(true);
-    setError(null);
+  const loadDogs = useCallback(
+    async (pageNumber: number, breeds: string[], sort: string) => {
+      setLoading(true);
+      setError(null);
 
-    try {
-      const from = (pageNumber - 1) * size;
-      const data = await fetchDogs({
-        page: pageNumber,
-        size: size,
-        from: from,
-        breeds: breeds,
-        sort: sort,
-      });
-      setDogs(data.dogs);
-    } catch (err) {
-      setError("Failed to load dogs");
-    } finally {
-      setLoading(false);
-    }
-  };
+      try {
+        const from = (pageNumber - 1) * size;
+        const data = await fetchDogs({
+          page: pageNumber,
+          size: size,
+          from: from,
+          breeds: breeds,
+          sort: sort,
+        });
+        setDogs(data.dogs);
+      } catch (err) {
+        console.error("An error occurred:", err);
+        setError("Failed to load dogs");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [size]
+  );
 
   useEffect(() => {
     setPage(1);
     loadDogs(1, selectedBreeds, `${sortField}:${sortOrder}`);
-  }, [selectedBreeds, sortField, sortOrder]);
+  }, [selectedBreeds, sortField, sortOrder, loadDogs]);
 
   useEffect(() => {
     loadDogs(page, selectedBreeds, `${sortField}:${sortOrder}`);
-  }, [page]);
+  }, [page, loadDogs, selectedBreeds, sortField, sortOrder]);
 
   const handlePaginationNext = () => {
     setPage((prevPage) => prevPage + 1);
@@ -109,8 +108,8 @@ const DogTable: React.FC<DogTableProps> = ({ selectedBreeds }) => {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="name">Name</SelectItem>
               <SelectItem value="breed">Breed</SelectItem>
+              <SelectItem value="name">Name</SelectItem>
               <SelectItem value="age">Age</SelectItem>
             </SelectGroup>
           </SelectContent>

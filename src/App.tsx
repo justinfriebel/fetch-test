@@ -1,16 +1,17 @@
 import React, { useContext, useState } from "react";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { AuthProvider, AuthContext } from "@/contexts/AuthContext";
+import { AuthContext } from "@/contexts/AuthContext";
 import { LoginForm } from "@/components/login-form";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { DogBreedsFilter } from "./components/DogBreedsFilter";
 import DogTable from "./components/DogTable";
+import AuthProvider from "./components/AuthProvider";
 
 const AppContent: React.FC = () => {
   const authContext = useContext(AuthContext);

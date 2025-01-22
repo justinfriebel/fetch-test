@@ -12,7 +12,19 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default [
-  { ignores: ["dist", "eslint.config.js"] },
+  {
+    ignores: [
+      "dist",
+      "eslint.config.js",
+      ".wrangler",
+      "postcss.config.js",
+      "src/components/ui",
+      "tailwind.config.js",
+      "vite.config.ts",
+      "worker-configuration.d.ts",
+      "worker.ts",
+    ],
+  },
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     languageOptions: {

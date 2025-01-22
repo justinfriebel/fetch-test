@@ -10,15 +10,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthContext } from "@/contexts/AuthContext";
-import { useContext, useState } from "react";
+import { FC, FormEvent, useContext, useState } from "react";
 
-export const LoginForm: React.FC = () => {
+export const LoginForm: FC = () => {
   const authContext = useContext(AuthContext);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (authContext) {
       await authContext.login(name, email);
