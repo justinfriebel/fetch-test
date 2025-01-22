@@ -1,3 +1,5 @@
+import { fetchWithAuth } from "@/lib/utils";
+
 export type Dog = {
   id: string;
   name: string;
@@ -41,11 +43,8 @@ export async function fetchDogs(params: FetchDogsParams = {}): Promise<Dog[]> {
     queryParams.append("ageMax", ageMax.toString());
   }
 
-  const searchResponse = await fetch(
-    `https://frontend-take-home-service.fetch.com/dogs/search?${queryParams.toString()}`,
-    {
-      credentials: "include",
-    }
+  const searchResponse = await fetchWithAuth(
+    `https://frontend-take-home-service.fetch.com/dogs/search?${queryParams.toString()}`
   );
 
   if (!searchResponse.ok) {
@@ -60,14 +59,13 @@ export async function fetchDogs(params: FetchDogsParams = {}): Promise<Dog[]> {
     return [];
   }
 
-  const dogDetailsResponse = await fetch(
+  const dogDetailsResponse = await fetchWithAuth(
     "https://frontend-take-home-service.fetch.com/dogs",
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
       body: JSON.stringify(resultIds),
     }
   );
