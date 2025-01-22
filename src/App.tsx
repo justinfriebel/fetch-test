@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
@@ -11,9 +11,12 @@ import { LoginForm } from "@/components/login-form";
 import "./App.css";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { DogBreedsFilter } from "./components/DogBreedsFilter";
+import DogTable from "./components/DogTable";
 
 const AppContent: React.FC = () => {
   const authContext = useContext(AuthContext);
+
+  const [selectedBreeds, setSelectedBreeds] = useState<string[]>([]);
 
   if (!authContext) {
     return null;
@@ -45,7 +48,11 @@ const AppContent: React.FC = () => {
           </div>
         </header>
         <div className="p-4">
-          <DogBreedsFilter />
+          <DogBreedsFilter
+            selectedBreeds={selectedBreeds}
+            setSelectedBreeds={setSelectedBreeds}
+          />
+          <DogTable selectedBreeds={selectedBreeds} />
           <div className="pt-4">
             <button onClick={logout}>Logout</button>
           </div>

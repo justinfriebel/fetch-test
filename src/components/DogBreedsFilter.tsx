@@ -7,9 +7,16 @@ import {
 } from "@/components/ui/accordion";
 import { useEffect, useState } from "react";
 
-export function DogBreedsFilter() {
+type DogBreedsFilterProps = {
+  selectedBreeds: string[];
+  setSelectedBreeds: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+export const DogBreedsFilter: React.FC<DogBreedsFilterProps> = ({
+  selectedBreeds,
+  setSelectedBreeds,
+}) => {
   const [breeds, setBreeds] = useState<string[]>([]);
-  const [selectedBreeds, setSelectedBreeds] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchBreeds = async () => {
@@ -60,4 +67,4 @@ export function DogBreedsFilter() {
       </AccordionItem>
     </Accordion>
   );
-}
+};
