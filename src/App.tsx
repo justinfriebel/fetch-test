@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/sidebar";
 import { AuthProvider, AuthContext } from "@/contexts/AuthContext";
 import { LoginForm } from "@/components/login-form";
-import "./App.css";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { DogBreedsFilter } from "./components/DogBreedsFilter";
 import DogTable from "./components/DogTable";

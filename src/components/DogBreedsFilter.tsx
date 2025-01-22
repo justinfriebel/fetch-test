@@ -41,30 +41,34 @@ export const DogBreedsFilter: React.FC<DogBreedsFilterProps> = ({
 
     fetchBreeds();
   }, []);
+
   return (
-    <Accordion type="single" collapsible>
-      <AccordionItem value="breeds">
-        <AccordionTrigger>Dog Breeds</AccordionTrigger>
-        <AccordionContent>
-          <ToggleGroup
-            type="multiple"
-            value={selectedBreeds}
-            onValueChange={(value) => setSelectedBreeds(value)}
-            className="grid grid-cols-2 gap-2"
-          >
-            {breeds.map((breed) => (
-              <ToggleGroupItem
-                key={breed}
-                value={breed}
-                aria-label={`Toggle ${breed}`}
-                className="text-center"
-              >
-                {breed}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+    <div>
+      <p>Filter by:</p>
+      <Accordion type="single" collapsible className="pb-6">
+        <AccordionItem value="breeds">
+          <AccordionTrigger>Dog Breeds</AccordionTrigger>
+          <AccordionContent>
+            <ToggleGroup
+              type="multiple"
+              value={selectedBreeds}
+              onValueChange={(value) => setSelectedBreeds(value)}
+              className="grid grid-cols-2 gap-2"
+            >
+              {breeds.map((breed) => (
+                <ToggleGroupItem
+                  key={breed}
+                  value={breed}
+                  aria-label={`Toggle ${breed}`}
+                  className="text-center"
+                >
+                  {breed}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </div>
   );
 };

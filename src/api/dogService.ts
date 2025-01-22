@@ -14,21 +14,48 @@ type FetchDogsParams = {
   zipCodes?: string[];
   ageMin?: number;
   ageMax?: number;
+  page?: number;
+  from?: number;
+  size?: number;
+  sort?: string;
 };
 
-type FetchDogsResults = {
+type DogSearchResults = {
   resultIds: string[];
   total: number;
   next?: string;
+  prev?: string;
 };
 
-export async function fetchDogs(params: FetchDogsParams = {}): Promise<Dog[]> {
-  const { breeds, zipCodes, ageMin, ageMax } = params;
+type FetchDogsResults = {
+  dogs: Dog[];
+  total: number;
+  next?: string;
+  prev?: string;
+};
+
+export async function fetchDogs(
+  params: FetchDogsParams = {}
+): Promise<FetchDogsResults> {
+  const {
+    breeds,
+    zipCodes,
+    ageMin,
+    ageMax,
+    page = 1,
+    size = 10,
+    from = 0,
+    sort,
+  } = params;
 
   const queryParams = new URLSearchParams();
 
   if (breeds && breeds.length > 0) {
     breeds.forEach((breed) => queryParams.append("breeds", breed));
+  }
+
+  if (sort) {
+    queryParams.append("sort", sort);
   }
 
   if (zipCodes && zipCodes.length > 0) {
@@ -43,6 +70,10 @@ export async function fetchDogs(params: FetchDogsParams = {}): Promise<Dog[]> {
     queryParams.append("ageMax", ageMax.toString());
   }
 
+  queryParams.append("page", page.toString());
+  queryParams.append("size", size.toString());
+  queryParams.append("from", from.toString());
+
   const searchResponse = await fetchWithAuth(
     `https://frontend-take-home-service.fetch.com/dogs/search?${queryParams.toString()}`
   );
@@ -51,12 +82,12 @@ export async function fetchDogs(params: FetchDogsParams = {}): Promise<Dog[]> {
     throw new Error("Failed to fetch dog IDs");
   }
 
-  const searchData: FetchDogsResults = await searchResponse.json();
+  const searchData: DogSearchResults = await searchResponse.json();
 
-  const { resultIds } = searchData;
+  const { resultIds, total, next, prev } = searchData;
 
   if (!resultIds || resultIds.length === 0) {
-    return [];
+    return { dogs: [], total, next, prev };
   }
 
   const dogDetailsResponse = await fetchWithAuth(
@@ -75,5 +106,6 @@ export async function fetchDogs(params: FetchDogsParams = {}): Promise<Dog[]> {
   }
 
   const dogs: Dog[] = await dogDetailsResponse.json();
-  return dogs;
+
+  return { dogs, total, next, prev };
 }

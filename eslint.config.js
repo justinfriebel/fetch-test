@@ -5,9 +5,14 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tsParser from "@typescript-eslint/parser";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default [
-  { ignores: ["dist"] },
+  { ignores: ["dist", "eslint.config.js"] },
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     languageOptions: {
