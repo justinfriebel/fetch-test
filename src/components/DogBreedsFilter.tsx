@@ -6,6 +6,7 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import React, { useEffect, useState } from "react";
+import { fetchWithAuth } from "@/lib/utils";
 
 type DogBreedsFilterProps = {
   selectedBreeds: string[];
@@ -21,11 +22,8 @@ export const DogBreedsFilter: React.FC<DogBreedsFilterProps> = ({
   useEffect(() => {
     const fetchBreeds = async () => {
       try {
-        const response = await fetch(
-          "https://frontend-take-home-service.fetch.com/dogs/breeds",
-          {
-            credentials: "include",
-          }
+        const response = await fetchWithAuth(
+          "https://frontend-take-home-service.fetch.com/dogs/breeds"
         );
         if (response.ok) {
           const data = (await response.json()) as string[];

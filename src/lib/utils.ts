@@ -12,6 +12,7 @@ export async function fetchWithAuth(
   const response = await fetch(input, { ...init, credentials: "include" });
 
   if (response.status === 401) {
+    localStorage.removeItem("user");
     window.location.reload();
     return Promise.reject(new Error("Unauthorized"));
   }

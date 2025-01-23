@@ -21,7 +21,7 @@ export const LoginForm: FC = () => {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (authContext) {
-      await authContext.login(name, email);
+      await authContext.login({ name, email });
     }
   };
 

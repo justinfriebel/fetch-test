@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Star } from "lucide-react";
 import { fetchDogs } from "@/api/dogService";
 import type { Dog } from "@/api/dogService";
 import {
@@ -25,12 +26,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "./ui/button";
+import { AuthContext } from "@/contexts/AuthContext";
+import { useDogFavorites } from "@/hooks/useDogFavorites";
 
 type DogTableProps = {
   selectedBreeds: string[];
 };
 
 const DogTable: React.FC<DogTableProps> = ({ selectedBreeds }) => {
+  const authContext = useContext(AuthContext);
+  const user = authContext?.user;
+  const { dogFavorites, addDogFavorite, removeDogFavorite } = useDogFavorites(
+    user?.email ?? null
+  );
+
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -90,6 +99,18 @@ const DogTable: React.FC<DogTableProps> = ({ selectedBreeds }) => {
     }
   };
 
+  const isFavorite = (dogId: string) => {
+    return dogFavorites.includes(dogId);
+  };
+
+  const toggleFavorite = (dogId: string) => {
+    if (isFavorite(dogId)) {
+      removeDogFavorite(dogId);
+    } else {
+      addDogFavorite(dogId);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -128,6 +149,7 @@ const DogTable: React.FC<DogTableProps> = ({ selectedBreeds }) => {
             </TableHead>
             <TableHead onClick={() => handleSortChange("age")}>Age</TableHead>
             <TableHead>Zip Code</TableHead>
+            <TableHead>Favorite</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -140,6 +162,23 @@ const DogTable: React.FC<DogTableProps> = ({ selectedBreeds }) => {
               <TableCell>{dog.breed}</TableCell>
               <TableCell>{dog.age}</TableCell>
               <TableCell>{dog.zip_code}</TableCell>
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  onClick={() => toggleFavorite(dog.id)}
+                  aria-label={
+                    isFavorite(dog.id)
+                      ? "Remove from favorites"
+                      : "Add to favorites"
+                  }
+                >
+                  <Star
+                    className={`h-5 w-5 ${
+                      isFavorite(dog.id) ? "fill-current text-yellow-500" : ""
+                    }`}
+                  />
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
