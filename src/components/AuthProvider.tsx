@@ -25,8 +25,11 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const response = await fetchWithAuth(
-          "https://frontend-take-home-service.fetch.com/dogs/breeds"
+        const response = await fetch(
+          "https://frontend-take-home-service.fetch.com/dogs/breeds",
+          {
+            credentials: "include",
+          }
         );
         setIsAuthenticated(response.ok);
       } catch (error) {
