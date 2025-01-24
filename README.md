@@ -1,8 +1,37 @@
-# React + Vite
+# DogSearch
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a web application that allows users to search for dog breeds and find their perfect match.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Follow these steps to set up and run the project locally:
+
+1. **Clone the repository**:
+
+```bash
+git clone git@github.com:justinfriebel/fetch-test.git
+```
+
+2. **Change directories**:
+
+```bash
+cd fetch-test
+```
+
+3. **Install pnpm if you don't have it**:
+
+```bash
+brew install pnpm
+```
+
+4. **Install dependencies**:
+
+```bash
+pnpm i
+```
+
+5. **Run the application**:
+
+```bash
+pnpm dev
+```
