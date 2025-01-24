@@ -156,7 +156,7 @@ const DogTable: React.FC<DogTableProps> = ({
           {dogs.map((dog) => (
             <TableRow key={dog.id}>
               <TableCell>
-                <img src={dog.img} alt={dog.name} width="100" />
+                <img src={dog.img} alt={dog.name} width="200" />
               </TableCell>
               <TableCell>{dog.name}</TableCell>
               <TableCell>{dog.breed}</TableCell>
