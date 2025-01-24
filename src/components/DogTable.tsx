@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import { fetchDogs } from "@/api/dogService";
 import type { Dog } from "@/api/dogService";
@@ -26,20 +26,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "./ui/button";
-import { AuthContext } from "@/contexts/AuthContext";
-import { useDogFavorites } from "@/hooks/useDogFavorites";
 
 type DogTableProps = {
   selectedBreeds: string[];
+  dogFavorites: string[];
+  addDogFavorite: (dogId: string) => void;
+  removeDogFavorite: (dogId: string) => void;
 };
 
-const DogTable: React.FC<DogTableProps> = ({ selectedBreeds }) => {
-  const authContext = useContext(AuthContext);
-  const user = authContext?.user;
-  const { dogFavorites, addDogFavorite, removeDogFavorite } = useDogFavorites(
-    user?.email ?? null
-  );
-
+const DogTable: React.FC<DogTableProps> = ({
+  selectedBreeds,
+  dogFavorites,
+  addDogFavorite,
+  removeDogFavorite,
+}) => {
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

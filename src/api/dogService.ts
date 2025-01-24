@@ -34,6 +34,34 @@ type FetchDogsResults = {
   prev?: string;
 };
 
+export interface Match {
+  match: string;
+}
+
+export async function fetchDogDetails(dogIds: string[]): Promise<Dog[]> {
+  if (!Array.isArray(dogIds) || dogIds.length === 0) {
+    throw new Error("dogIds must be a non-empty array");
+  }
+
+  const response = await fetchWithAuth(
+    "https://frontend-take-home-service.fetch.com/dogs",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dogIds),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch dog details");
+  }
+
+  const dogs: Dog[] = await response.json();
+  return dogs;
+}
+
 export async function fetchDogs(
   params: FetchDogsParams = {}
 ): Promise<FetchDogsResults> {
@@ -90,22 +118,31 @@ export async function fetchDogs(
     return { dogs: [], total, next, prev };
   }
 
-  const dogDetailsResponse = await fetchWithAuth(
-    "https://frontend-take-home-service.fetch.com/dogs",
+  const dogs = await fetchDogDetails(resultIds);
+
+  return { dogs, total, next, prev };
+}
+
+export async function fetchDogMatch(dogIds: string[]): Promise<Match> {
+  if (!Array.isArray(dogIds) || dogIds.length === 0) {
+    throw new Error("dogIds must be a non-empty array");
+  }
+
+  const response = await fetchWithAuth(
+    "https://frontend-take-home-service.fetch.com/dogs/match",
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(resultIds),
+      body: JSON.stringify(dogIds),
     }
   );
 
-  if (!dogDetailsResponse.ok) {
-    throw new Error("Failed to fetch dog details");
+  if (!response.ok) {
+    throw new Error("Failed to fetch dog match");
   }
 
-  const dogs: Dog[] = await dogDetailsResponse.json();
-
-  return { dogs, total, next, prev };
+  const matchData: Match = await response.json();
+  return matchData;
 }

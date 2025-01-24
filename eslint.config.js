@@ -19,6 +19,7 @@ export default [
       ".wrangler",
       "postcss.config.js",
       "src/components/ui",
+      "src/hooks/use-toast.ts",
       "tailwind.config.js",
       "vite.config.ts",
       "worker-configuration.d.ts",
