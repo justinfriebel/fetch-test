@@ -1,21 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { fetchWithAuth } from "@/lib/utils";
-import { Check, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type DogBreedsFilterProps = {
   selectedBreeds: string[];
@@ -23,98 +17,95 @@ type DogBreedsFilterProps = {
 };
 
 export const DogBreedsFilter: React.FC<DogBreedsFilterProps> = ({
-  selectedBreeds,
+  selectedBreeds = [],
   setSelectedBreeds,
 }) => {
   const [breeds, setBreeds] = useState<string[]>([]);
-  const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchBreeds = async () => {
+      setIsLoading(true);
       try {
         const response = await fetchWithAuth(
           "https://frontend-take-home-service.fetch.com/dogs/breeds"
         );
         if (response.ok) {
           const data = (await response.json()) as string[];
-          const sortedBreeds = data.sort((a, b) => a.localeCompare(b));
+          const sortedBreeds = Array.isArray(data)
+            ? data.sort((a, b) => a.localeCompare(b))
+            : [];
           setBreeds(sortedBreeds);
         } else {
           console.error("Failed to fetch breeds");
+          setBreeds([]);
         }
       } catch (error) {
         console.error("Error fetching breeds:", error);
+        setBreeds([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchBreeds();
   }, []);
 
+  const handleBreedSelect = (breed: string) => {
+    setSelectedBreeds((prev = []) =>
+      prev.includes(breed) ? prev.filter((b) => b !== breed) : [...prev, breed]
+    );
+  };
+
   return (
     <div className="flex flex-col gap-2 pb-4">
       <p>Filter by breeds:</p>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="min-h-[44px] justify-between"
-          >
-            {selectedBreeds.length === 0 && "Select breeds..."}
-            {selectedBreeds.length > 0 && (
-              <div className="flex gap-1 flex-wrap">
-                {selectedBreeds.map((breed) => (
-                  <Badge
-                    variant="secondary"
-                    key={breed}
-                    className="mr-1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedBreeds(
-                        selectedBreeds.filter((b) => b !== breed)
-                      );
-                    }}
-                  >
+      <div className="flex flex-wrap gap-2 mb-2">
+        {Array.isArray(selectedBreeds) &&
+          selectedBreeds.map((breed) => (
+            <Badge
+              variant="secondary"
+              key={breed}
+              className="flex items-center gap-1 p-1"
+            >
+              {breed}
+              <X
+                className="h-3 w-3 cursor-pointer"
+                onClick={() => handleBreedSelect(breed)}
+              />
+            </Badge>
+          ))}
+      </div>
+      <Select onValueChange={handleBreedSelect} value="">
+        <SelectTrigger className="w-full">
+          <SelectValue defaultValue="" placeholder="Select breeds..." />
+        </SelectTrigger>
+        <SelectContent>
+          {isLoading ? (
+            <SelectGroup>
+              <SelectItem value="loading" disabled>
+                Loading breeds...
+              </SelectItem>
+            </SelectGroup>
+          ) : !breeds.length ? (
+            <SelectGroup>
+              <SelectItem value="empty" disabled>
+                No breeds found
+              </SelectItem>
+            </SelectGroup>
+          ) : (
+            <SelectGroup className="max-h-[300px] overflow-auto">
+              {breeds
+                .filter((breed) => !selectedBreeds.includes(breed))
+                .map((breed) => (
+                  <SelectItem key={breed} value={breed}>
                     {breed}
-                    <X className="ml-1 h-3 w-3" />
-                  </Badge>
+                  </SelectItem>
                 ))}
-              </div>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[300px] p-0">
-          <Command>
-            <CommandInput placeholder="Search breeds..." />
-            <CommandEmpty>No breed found.</CommandEmpty>
-            <CommandGroup className="max-h-[300px] overflow-auto">
-              {breeds.map((breed) => (
-                <CommandItem
-                  key={breed}
-                  onSelect={() => {
-                    setSelectedBreeds((prev) =>
-                      prev.includes(breed)
-                        ? prev.filter((b) => b !== breed)
-                        : [...prev, breed]
-                    );
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      selectedBreeds.includes(breed)
-                        ? "opacity-100"
-                        : "opacity-0"
-                    )}
-                  />
-                  {breed}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </Command>
-        </PopoverContent>
-      </Popover>
+            </SelectGroup>
+          )}
+        </SelectContent>
+      </Select>
     </div>
   );
 };
